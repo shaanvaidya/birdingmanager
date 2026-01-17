@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>San Francisco Bird Sightings</title>
+    <title>Birding Manager</title>
     <style>
       :root {
         color-scheme: light;
@@ -22,7 +22,7 @@
       }
 
       main {
-        max-width: 560px;
+        max-width: 960px;
         width: 100%;
         background: #ffffff;
         border-radius: 20px;
@@ -56,22 +56,343 @@
         padding: 12px 16px;
         font-weight: 600;
       }
+
+      section {
+        margin-bottom: 28px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: #eef2ff;
+        color: #2d3a8c;
+        font-weight: 600;
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+      }
+
+      .muted {
+        color: #6b7280;
+        font-size: 0.95rem;
+      }
+
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      .card {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .card h3 {
+        margin: 0 0 8px;
+        font-size: 1.1rem;
+      }
+
+      .callout {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        border-radius: 16px;
+        padding: 16px;
+      }
+
+      .form-grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid #d1d5db;
+        background: #fff;
+        font-size: 0.95rem;
+      }
+
+      button {
+        background: #1d4ed8;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .stack {
+        display: grid;
+        gap: 12px;
+      }
+
+      .results {
+        background: #f1f5f9;
+        border-radius: 16px;
+        padding: 16px;
+        border: 1px solid #e2e8f0;
+      }
+
+      .results h4 {
+        margin: 0 0 8px;
+      }
+
+      .empty {
+        font-style: italic;
+        color: #64748b;
+      }
+
+      .status {
+        font-size: 0.9rem;
+        color: #475569;
+      }
     </style>
   </head>
   <body>
     <main>
-      <h1>Birds seen in San Francisco</h1>
-      <p>A simple list of birds recently spotted around the city.</p>
-      <ul>
-        <li>Dummy Bird 001</li>
-        <li>Dummy Bird 002</li>
-        <li>Dummy Bird 003</li>
-        <li>Dummy Bird 004</li>
-        <li>Dummy Bird 005</li>
-        <li>Dummy Bird 006</li>
-        <li>Dummy Bird 007</li>
-        <li>Dummy Bird 008</li>
-      </ul>
+      <section>
+        <span class="pill">Planning canvas</span>
+        <h1>Birding Manager</h1>
+        <p>
+          Use this starter page to explore what the eBird API can do for your
+          birding workflow. It includes a simple prototype for pulling recent
+          observations and hotspots while keeping your API key in your browser
+          only.
+        </p>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <h3>1) Monthly + yearly sightings recap</h3>
+          <p class="muted">
+            Answer: “What birds have I already seen this month or year in San
+            Francisco County, and which ones am I still missing?”
+          </p>
+          <ul>
+            <li>Use your eBird token to load your personal sightings.</li>
+            <li>Compare against the county list to find missing species.</li>
+            <li>Summarize counts for month and year.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>2) Hotspot ideas near a location</h3>
+          <p class="muted">
+            Answer: “If I enter a location, what hotspots maximize species
+            diversity right now?”
+          </p>
+          <ul>
+            <li>Search hotspots within a chosen radius.</li>
+            <li>Pull recent observations to estimate diversity.</li>
+            <li>Highlight top hotspots with last reported dates.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="callout stack">
+        <h3>Prototype controls</h3>
+        <p class="muted">
+          Paste your eBird API key below. It stays in your browser session only
+          and is never saved on a server.
+        </p>
+        <div class="form-grid">
+          <div>
+            <label for="api-key">eBird API key</label>
+            <input id="api-key" type="password" placeholder="Enter your token" />
+          </div>
+          <div>
+            <label for="timeframe">Timeframe</label>
+            <select id="timeframe">
+              <option value="month">This month</option>
+              <option value="prev-month">Last month</option>
+              <option value="year">This year</option>
+              <option value="recent">Recent (last 30 days)</option>
+            </select>
+          </div>
+          <div>
+            <label for="county">County</label>
+            <input id="county" type="text" value="US-CA-075" />
+            <p class="status">Default is San Francisco County.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="card stack">
+          <h3>Seen vs missing (prototype)</h3>
+          <p class="muted">
+            This initial prototype loads recent observations for the county and
+            lists them. The full “seen vs missing” logic will be wired once
+            personal sightings are available.
+          </p>
+          <button id="load-county">Load county observations</button>
+          <div class="results">
+            <h4>Recent county observations</h4>
+            <p id="county-status" class="empty">No data loaded yet.</p>
+            <ul id="county-results"></ul>
+          </div>
+        </div>
+
+        <div class="card stack">
+          <h3>Hotspots near a location (prototype)</h3>
+          <p class="muted">
+            Enter a latitude/longitude to pull hotspots within 10km and begin
+            ranking options.
+          </p>
+          <div class="form-grid">
+            <div>
+              <label for="lat">Latitude</label>
+              <input id="lat" type="text" placeholder="37.7749" />
+            </div>
+            <div>
+              <label for="lng">Longitude</label>
+              <input id="lng" type="text" placeholder="-122.4194" />
+            </div>
+          </div>
+          <button id="load-hotspots">Load hotspots</button>
+          <div class="results">
+            <h4>Nearby hotspots</h4>
+            <p id="hotspot-status" class="empty">No data loaded yet.</p>
+            <ul id="hotspot-results"></ul>
+          </div>
+        </div>
+      </section>
     </main>
+    <script>
+      const apiKeyInput = document.getElementById("api-key");
+      const timeframeSelect = document.getElementById("timeframe");
+      const countyInput = document.getElementById("county");
+      const countyButton = document.getElementById("load-county");
+      const countyStatus = document.getElementById("county-status");
+      const countyResults = document.getElementById("county-results");
+
+      const hotspotButton = document.getElementById("load-hotspots");
+      const hotspotStatus = document.getElementById("hotspot-status");
+      const hotspotResults = document.getElementById("hotspot-results");
+      const latInput = document.getElementById("lat");
+      const lngInput = document.getElementById("lng");
+
+      const ebirdBase = "https://api.ebird.org/v2";
+
+      const clearList = (list) => {
+        while (list.firstChild) {
+          list.removeChild(list.firstChild);
+        }
+      };
+
+      const setStatus = (element, message, isEmpty = false) => {
+        element.textContent = message;
+        element.classList.toggle("empty", isEmpty);
+      };
+
+      const getApiKey = () => apiKeyInput.value.trim();
+
+      const buildHeaders = () => {
+        const token = getApiKey();
+        if (!token) {
+          throw new Error("Please enter an eBird API key to continue.");
+        }
+        return {
+          "X-eBirdApiToken": token,
+        };
+      };
+
+      const buildRecentUrl = (regionCode) => {
+        const params = new URLSearchParams({
+          back: "30",
+          maxResults: "50",
+        });
+        return `${ebirdBase}/data/obs/${regionCode}/recent?${params}`;
+      };
+
+      const buildHotspotUrl = (lat, lng) => {
+        const params = new URLSearchParams({
+          lat,
+          lng,
+          dist: "10",
+        });
+        return `${ebirdBase}/ref/hotspot/geo?${params}`;
+      };
+
+      countyButton.addEventListener("click", async () => {
+        clearList(countyResults);
+        setStatus(countyStatus, "Loading county observations...", true);
+
+        try {
+          const headers = buildHeaders();
+          const regionCode = countyInput.value.trim() || "US-CA-075";
+          const response = await fetch(buildRecentUrl(regionCode), { headers });
+          if (!response.ok) {
+            throw new Error(`Request failed (${response.status})`);
+          }
+          const data = await response.json();
+          if (!data.length) {
+            setStatus(countyStatus, "No recent observations found.", true);
+            return;
+          }
+          setStatus(
+            countyStatus,
+            `Showing ${data.length} recent observations (${timeframeSelect.value}).`
+          );
+          data.forEach((obs) => {
+            const item = document.createElement("li");
+            item.textContent = `${obs.comName} — ${obs.locName}`;
+            countyResults.appendChild(item);
+          });
+        } catch (error) {
+          setStatus(countyStatus, error.message, true);
+        }
+      });
+
+      hotspotButton.addEventListener("click", async () => {
+        clearList(hotspotResults);
+        setStatus(hotspotStatus, "Loading hotspots...", true);
+
+        try {
+          const headers = buildHeaders();
+          const lat = latInput.value.trim();
+          const lng = lngInput.value.trim();
+          if (!lat || !lng) {
+            throw new Error("Please enter both latitude and longitude.");
+          }
+          const response = await fetch(buildHotspotUrl(lat, lng), { headers });
+          if (!response.ok) {
+            throw new Error(`Request failed (${response.status})`);
+          }
+          const data = await response.json();
+          if (!data.length) {
+            setStatus(hotspotStatus, "No hotspots found.", true);
+            return;
+          }
+          setStatus(hotspotStatus, `Showing ${data.length} hotspots.`);
+          data.slice(0, 20).forEach((spot) => {
+            const item = document.createElement("li");
+            item.textContent = `${spot.locName} — ${spot.subnational2Code}`;
+            hotspotResults.appendChild(item);
+          });
+        } catch (error) {
+          setStatus(hotspotStatus, error.message, true);
+        }
+      });
+    </script>
   </body>
 </html>
